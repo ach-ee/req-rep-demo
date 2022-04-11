@@ -11,22 +11,22 @@ bool MainMenu()
 {
     Console.Clear();
     Console.WriteLine("Available options:");
-    Console.WriteLine("1. Send request to client A");
-    Console.WriteLine("2. Send request to client B");
-    Console.WriteLine("3. Send long request to client A");
+    Console.WriteLine("1. Send request to Go Client");
+    Console.WriteLine("2. Send request to Rust Client");
+    Console.WriteLine("3. Send long request to Go Client");
     Console.WriteLine("4. Exit");
     Console.WriteLine("\r\nChoose an option: ");
 
     switch (Console.ReadLine())
     {
         case "1":
-            server.SendRequest("A");
+            server.SendRequest(0);
             break;
         case "2":
-            server.SendRequest("A");
+            server.SendRequest(1);
             break;
         case "3":
-            server.SendLongRequest("A");
+            server.SendLongRequest(0);
             break;
         case "4":
             Console.WriteLine("Exiting. Goodbye...");
