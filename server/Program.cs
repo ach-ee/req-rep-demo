@@ -7,6 +7,8 @@ while (showMenu)
     showMenu = MainMenu();
 }
 
+server.Dispose();
+
 bool MainMenu()
 {
     Console.Clear();
@@ -36,7 +38,5 @@ bool MainMenu()
             break;
     }
 
-    Console.WriteLine("Press any key to continue...");
-    Console.ReadKey();
     return true;
 }
