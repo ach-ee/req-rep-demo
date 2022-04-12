@@ -14,7 +14,7 @@ class Server : IDisposable
         var token = _cancelSource.Token;
 
         Task.Factory.StartNew(() => {
-            using (var poller = new NetMQPoller{ _queue })
+            using (var poller = new NetMQPoller{ })
             using (var server = new RouterSocket("@tcp://localhost:5555"))
             {
                 server.ReceiveReady += (s, a) => Receive(server.ReceiveMultipartMessage());
@@ -22,26 +22,25 @@ class Server : IDisposable
 
                 poller.RunAsync();
 
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
-                    if (token.IsCancellationRequested)
+                    var client = _queue.Dequeue();
+                    if (client == -1)
                     {
-                        poller.Stop();
-                        return;
+                        continue;
                     }
 
-                    int client = 0;
-                    if (_queue.TryDequeue(out client, new TimeSpan(0, 0, 1)))
-                    {
-                        Send(server, client);
-                    }
+                    Send(server, client);
                 }
+
+                poller.Stop();
             }
         }, token,TaskCreationOptions.LongRunning, TaskScheduler.Current);
     }
 
     public void Dispose()
     {
+        _queue.Enqueue(-1);
         _cancelSource.Cancel();
     }
 
